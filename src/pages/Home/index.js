@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TextInput, Platform, ScrollView, FlatList } from 'react-native';
+import { View, Text, StyleSheet, TextInput, Platform, FlatList } from 'react-native';
 import { Button } from '../../components/Button';
 import { SkillCard } from '../../components/SkillCard';
 
