@@ -3,13 +3,23 @@ import { View, Text, StyleSheet, TextInput, Platform, FlatList } from 'react-nat
 import { Button } from '../../components/Button';
 import { SkillCard } from '../../components/SkillCard';
 
+interface SkillData {
+  id: string;
+  name: string;
+}
+
 export default function Home() {
   const [newSkill, setNewSkill] = useState('');
-  const [mySkills, setMySkills] = useState([]);
+  const [mySkills, setMySkills] = useState<SkillData[]>([]);
   const [gretting, setGretting] = useState('');
 
   function handleAddNewSkill() {
-    setMySkills(oldState => [...oldState, newSkill]);
+    const data = {
+      id: String(new Date().getTime()),
+      name: newSkill
+    }
+
+    setMySkills(oldState => [...oldState, data]);
   }
 
   useEffect(() => {
@@ -49,9 +59,9 @@ export default function Home() {
 
       <FlatList
         data={mySkills}
-        keyExtractor={item => item}
+        keyExtractor={item => item.id}
         renderItem={({ item }) => (
-          <SkillCard skill={item} />
+          <SkillCard skill={item.name} />
         )}
       />
     </View>
@@ -62,7 +72,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#121015',
-    paddingHorizontal: 20,
     paddingVertical: 70,
     paddingHorizontal: 30
   },
