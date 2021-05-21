@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TextInput, Platform, FlatList } from 'react-native';
+import { View, Text, StyleSheet, TextInput, Platform, FlatList, Alert } from 'react-native';
 import { Button } from '../../components/Button';
 import { SkillCard } from '../../components/SkillCard';
 
@@ -14,12 +14,23 @@ export default function Home() {
   const [gretting, setGretting] = useState('');
 
   function handleAddNewSkill() {
+    if (newSkill == '') {
+      Alert.alert('O campo está vazio, por favor digite alguma coisa!')
+      return
+    }
     const data = {
       id: String(new Date().getTime()),
       name: newSkill
     }
-
     setMySkills(oldState => [...oldState, data]);
+    setNewSkill('')
+  }
+
+  function handleRemoveSkill({ name, id }: SkillData) {
+    Alert.alert(`A skill ${name} foi apagado da sua lista!`)
+    setMySkills(oldState => oldState.filter(
+      skill => skill.id !== id
+    ));
   }
 
   useEffect(() => {
@@ -47,23 +58,29 @@ export default function Home() {
       <TextInput
         style={styles.input}
         placeholder="New skill"
+        value={newSkill}
         placeholderTextColor="#666"
         onChangeText={setNewSkill}
       />
 
       <Button
-        handleAddNewSkill={handleAddNewSkill}
+        title="Add"
+        onPress={handleAddNewSkill}
       />
 
       <Text style={[styles.title, { marginVertical: 50 }]}>My Skills</Text>
 
-      <FlatList
-        data={mySkills}
-        keyExtractor={item => item.id}
-        renderItem={({ item }) => (
-          <SkillCard skill={item.name} />
-        )}
-      />
+      {mySkills.length !== 0 ?
+        <FlatList
+          data={mySkills}
+          keyExtractor={item => item.id}
+          renderItem={({ item }) => (
+            <SkillCard
+              skill={item.name}
+              onPress={() => handleRemoveSkill(item)}
+            />
+          )}
+        /> : <Text style={styles.titleSkill}>Não há skills cadastradas...</Text>}
     </View>
   )
 }
@@ -90,5 +107,12 @@ const styles = StyleSheet.create({
   },
   greetings: {
     color: '#fff'
+  },
+  titleSkill: {
+    fontSize: 18,
+    color: '#fff',
+    opacity: .3,
+    alignItems: 'center',
+
   }
 })
